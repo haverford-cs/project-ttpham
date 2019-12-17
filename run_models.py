@@ -3,7 +3,10 @@
 
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn import metrics
 
 # my imports
 import utils
@@ -13,18 +16,23 @@ def main():
     print(f'# train examples: {len(train)}')
     print(f'# test examples: {len(test)}')
 
-    # train bag-of-word model
-    train_headlines = utils.preprocess(train)
+    # create vectorizer and preprocess data
     vectorizer = CountVectorizer()
+    train_headlines = utils.preprocess(train)
     train_bag = vectorizer.fit_transform(train_headlines)
-    print(f'# words in bag: {train_bag.shape}')
-    model = LogisticRegression()
-    model = model.fit(train_bag, train['Label'])
-
-    # test bag-of-words model
     test_headlines = utils.preprocess(test)
     test_bag = vectorizer.transform(test_headlines)
-    predictions = model.predict(test_bag)
+
+    # print(f'# words in bag: {train_bag.shape}')
+    # print(vectorizer.vocabulary_) # (key: feature, value: column index)
+    # print(list(vectorizer.vocabulary_.keys())) # vocabulary
+    
+    # Logistic Regression
+    clf = LogisticRegression()
+    clf.fit(train_bag, train['Label'])
+
+    # test
+    predictions = clf.predict(test_bag)
 
     # confusion matrix
     confusion_matrix = pd.crosstab(test['Label'], predictions, rownames=['True'], colnames=['Predicted'])
@@ -32,6 +40,30 @@ def main():
 
     # feature analysis: which features are more predictive/informative
     # predict day x based on previous days
+
+    # KNN
+    clf = KNeighborsClassifier(n_neighbors=3)
+    clf.fit(train_bag, train['Label'])
+
+    # test
+    predictions = clf.predict(test_bag)
+
+    # confusion matrix
+    confusion_matrix = pd.crosstab(test['Label'], predictions, rownames=['True'], colnames=['Predicted'])
+    print(confusion_matrix)
+
+    # SVM
+    clf = SGDClassifier()
+    clf.fit(train_bag, train['Label'])
+
+    # test
+    predictions = clf.predict(test_bag)
+
+    # confusion matrix
+    confusion_matrix = pd.crosstab(test['Label'], predictions, rownames=['True'], colnames=['Predicted'])
+    print(confusion_matrix)
+    
+    # Naive Bayes
 
 
 if __name__ == '__main__':
