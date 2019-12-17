@@ -1,5 +1,7 @@
-# Author: Tessa Pham
-# Description: Utils for loading and preprocessing data.
+"""
+Author: Tessa Pham
+Utils for loading and processing data.
+"""
 
 import pandas as pd
 
