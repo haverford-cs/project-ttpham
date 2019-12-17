@@ -1,6 +1,7 @@
-# Author: Tessa Pham
-# Description: Predict stock prices based on daily news headlines using different models.
-
+"""
+Author: Tessa Pham
+Predict stock prices based on daily news headlines using different models.
+"""
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression, SGDClassifier
@@ -18,10 +19,10 @@ def main():
 
     # create vectorizer and preprocess data
     vectorizer = CountVectorizer()
-    train_headlines = utils.preprocess(train)
-    train_bag = vectorizer.fit_transform(train_headlines)
-    test_headlines = utils.preprocess(test)
-    test_bag = vectorizer.transform(test_headlines)
+    X_train, y_train = utils.process(train)
+    train_bag = vectorizer.fit_transform(X_train)
+    X_test, y_test = utils.process(test)
+    test_bag = vectorizer.transform(X_test)
 
     # print(f'# words in bag: {train_bag.shape}')
     # print(vectorizer.vocabulary_) # (key: feature, value: column index)
@@ -29,13 +30,13 @@ def main():
     
     # Logistic Regression
     clf = LogisticRegression()
-    clf.fit(train_bag, train['Label'])
+    clf.fit(train_bag, y_train)
 
     # test
     predictions = clf.predict(test_bag)
 
     # confusion matrix
-    confusion_matrix = pd.crosstab(test['Label'], predictions, rownames=['True'], colnames=['Predicted'])
+    confusion_matrix = pd.crosstab(y_test, predictions, rownames=['True'], colnames=['Predicted'])
     print(confusion_matrix)
 
     # feature analysis: which features are more predictive/informative
@@ -43,26 +44,29 @@ def main():
 
     # KNN
     clf = KNeighborsClassifier(n_neighbors=3)
-    clf.fit(train_bag, train['Label'])
+    clf.fit(train_bag, y_train)
 
     # test
     predictions = clf.predict(test_bag)
 
     # confusion matrix
-    confusion_matrix = pd.crosstab(test['Label'], predictions, rownames=['True'], colnames=['Predicted'])
+    confusion_matrix = pd.crosstab(y_test, predictions, rownames=['True'], colnames=['Predicted'])
     print(confusion_matrix)
 
     # SVM
     clf = SGDClassifier()
-    clf.fit(train_bag, train['Label'])
+    clf.fit(train_bag, y_train)
 
     # test
     predictions = clf.predict(test_bag)
 
     # confusion matrix
-    confusion_matrix = pd.crosstab(test['Label'], predictions, rownames=['True'], colnames=['Predicted'])
+    confusion_matrix = pd.crosstab(y_test, predictions, rownames=['True'], colnames=['Predicted'])
     print(confusion_matrix)
-    
+    print(type(confusion_matrix))
+    confusion_matrix = confusion_matrix.to_numpy() # to_numpy() available in pandas 0.24 or later
+    print(confusion_matrix)
+
     # Naive Bayes
 
 
