@@ -18,18 +18,20 @@ def load_data():
     test = data[test_dates]
     return train, test
 
-def preprocess(data):
+def process(data):
     """
-    Preprocess a DataFrame into a list of headlines.
+    Process a dataset into feature values and labels.
     
     Parameters:
-        data (DataFrame) -- a table of dates and top 25 news headlines for each date
+        data (DataFrame) -- a dataset
     
     Returns:
-        headlines (list) -- list of daily news headlines
+        X (list) -- list of daily news headlines (25 headlines concatenated for each day)
+        y (list) -- list of daily news headlines
                             (25 headlines concatenated for each day)
     """
-    headlines = []
+    X = []
+    y = data['Label']
     for row in range(0, len(data.index)):
-        headlines.append(' '.join(str(x) for x in data.iloc[row, 2:27]))
-    return headlines
+        X.append(' '.join(str(x) for x in data.iloc[row, 2:27]))
+    return X, y
