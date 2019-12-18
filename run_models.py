@@ -34,24 +34,26 @@ def main():
     coeffs = clf.coef_.tolist()[0]
     df_coeff = pd.DataFrame({'Word': words, 'Coefficient': coeffs})
     df_coeff = df_coeff.sort_values(['Coefficient', 'Word'], ascending=[0, 1])
-    print(df_coeff.head(10))
-    print(df_coeff.tail(10))
+    df_coeff.head(30).to_excel('coeffs/unigram_pos_30.xlsx')
+    print('\n')
+    df_coeff.tail(30).to_excel('coeffs/unigram_neg_30.xlsx')
     df_coeff.to_csv('coeffs/unigram.csv')
-
+    
     bigram_vectorizer = CountVectorizer(ngram_range=(2, 2))
     train_bag = bigram_vectorizer.fit_transform(X_train)
     test_bag = bigram_vectorizer.transform(X_test)
     n_features = train_bag.shape[1]
     print(train_bag.shape)
-
+    """
     clf_bigram = LogisticRegression().fit(train_bag, y_train)
     words = bigram_vectorizer.get_feature_names()
     coeffs = clf_bigram.coef_.tolist()[0]
     df_coeff = pd.DataFrame({'Word': words, 'Coefficient': coeffs})
     df_coeff = df_coeff.sort_values(['Coefficient', 'Word'], ascending=[0, 1])
-    print(df_coeff.head(10))
-    print(df_coeff.tail(10))
+    df_coeff.head(30).to_excel('coeffs/bigram_pos_30.xlsx')
+    df_coeff.tail(30).to_excel('coeffs/bigram_neg_30.xlsx')
     df_coeff.to_csv('coeffs/bigram.csv')
+    """
     """
     # get most frequent words
     print(utils.get_top_words(X_train, 10))
@@ -67,7 +69,7 @@ def main():
     print(df_idf.head(10))
     print(df_idf.tail(10))
     """
-    """
+    
     # bag-of-bigrams model without using TFIDF
     # Logistic Regression
     print('\n------------\nLogistic Regression\n------------')
@@ -96,7 +98,7 @@ def main():
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.savefig('figs/lr_bigram.png', format='png')
-    # plt.show()
+    plt.show()
 
     # KNN
     print('\n------------\nKNN\n------------')
@@ -125,7 +127,7 @@ def main():
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.savefig('figs/knn_bigram.png', format='png')
-    # plt.show()
+    plt.show()
 
     # Naive Bayes
     print('\n------------\nNaive Bayes\n------------')
@@ -154,7 +156,7 @@ def main():
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.savefig('figs/nb_bigram.png', format='png')
-    # plt.show()
+    plt.show()
 
     # SVM
     print('\n------------\nSVM\n------------')
@@ -185,7 +187,7 @@ def main():
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.savefig('figs/svm_bigram.png', format='png')
-    # plt.show()
+    plt.show()
 
     # Random Forest
     print('\n------------\nRandom Forest\n------------')
@@ -214,8 +216,8 @@ def main():
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.savefig('figs/rf_bigram.png', format='png')
-    # plt.show()
-    """
+    plt.show()
+    
     """
     # example parameters for tuning: Random Forest
     parameters = {'vect__ngram_range': [(1, 1), (1, 2)], # choose unigram or bigram
