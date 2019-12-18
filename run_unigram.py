@@ -46,8 +46,8 @@ def main():
     df_idf = pd.DataFrame(tfidf_transformer.idf_, index=words, columns=["idf_weights"])
     df_idf = df_idf.sort_values(by=['idf_weights'], ascending=False)
     df_idf.to_csv('idf/values.csv')
-    df_idf.head(100).to_excel('idf/most_important_100')
-    df_idf.tail(30).to_excel('idf/least_important_30')
+    df_idf.head(1000).to_excel('idf/most_important_1000.xlsx')
+    df_idf.tail(100).to_excel('idf/least_important_100.xlsx')
 
     """
     # example parameter tuning for Random Forest
