@@ -48,7 +48,7 @@ def main():
     tfidf_transformer.fit(train_bag)
     df_idf = pd.DataFrame(tfidf_transformer.idf_, index=words, columns=["idf_weights"])
     df_idf = df_idf.sort_values(by=['idf_weights'])
-    df_idf.to_csv('idf/values.csv')
+    df_idf.to_csv('idf/values_bigram.csv')
     df_idf.head(1000).to_excel('idf/bigram_most_important_1000.xlsx')
     df_idf.tail(100).to_excel('idf/bigram_least_important_100.xlsx')
     
