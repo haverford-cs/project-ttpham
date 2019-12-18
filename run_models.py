@@ -5,7 +5,6 @@ Predict stock prices based on daily news headlines using different models.
 import pandas as pd
 import numpy as np
 import math
-import nltk
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.pipeline import Pipeline
@@ -15,9 +14,16 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import roc_curve, roc_auc_score, classification_report
+from nltk.stem.snowball import SnowballStemmer
 
 # my imports
 import utils
+
+stemmer = SnowballStemmer("english", ignore_stopwords=True)
+class StemmedCountVectorizer(CountVectorizer):
+    def build_analyzer(self):
+        analyzer = super(StemmedCountVectorizer, self).build_analyzer()
+        return lambda doc: ([stemmer.stem(w) for w in analyzer(doc)])
 
 def main():
     train, test = utils.load_data()
@@ -33,55 +39,8 @@ def main():
     n_features = train_bag.shape[1]
     
     """
-    # bag-of-words model without using TFIDF
-    # Logistic Regression
-    print('\n------------\nLogistic Regression\n------------')
+    # example of bag-of-words model without using TFIDF: Logistic Regression
     clf = LogisticRegression().fit(train_bag, y_train)
-    # test
-    predictions = clf.predict(test_bag)
-    # confusion matrix
-    confusion_matrix = pd.crosstab(y_test, predictions, rownames=['True'], colnames=['Predicted'])
-    print(confusion_matrix)
-    accuracy = np.mean(predictions == y_test)
-    print('accuracy = {0:.2f}%'.format(accuracy * 100))
-
-    # KNN
-    print('\n------------\nKNN\n------------')
-    clf = KNeighborsClassifier(n_neighbors=3).fit(train_bag, y_train)
-    # test
-    predictions = clf.predict(test_bag)
-    # confusion matrix
-    confusion_matrix = pd.crosstab(y_test, predictions, rownames=['True'], colnames=['Predicted'])
-    print(confusion_matrix)
-    accuracy = np.mean(predictions == y_test)
-    print('accuracy = {0:.2f}%'.format(accuracy * 100))
-
-    # Naive Bayes
-    print('\n------------\nNaive Bayes\n------------')
-    clf = MultinomialNB().fit(train_bag, y_train)
-    # test
-    predictions = clf.predict(test_bag)
-    # confusion matrix
-    confusion_matrix = pd.crosstab(y_test, predictions, rownames=['True'], colnames=['Predicted'])
-    print(confusion_matrix)
-    accuracy = np.mean(predictions == y_test)
-    print('accuracy = {0:.2f}%'.format(accuracy * 100))
-
-    # SVM
-    print('\n------------\nSVM\n------------')
-    clf = SGDClassifier().fit(train_bag, y_train)
-    # test
-    predictions = clf.predict(test_bag)
-    # confusion matrix
-    confusion_matrix = pd.crosstab(y_test, predictions, rownames=['True'], colnames=['Predicted'])
-    print(confusion_matrix)
-    accuracy = np.mean(predictions == y_test)
-    print('accuracy = {0:.2f}%'.format(accuracy * 100))
-    
-    # Random Forest
-    print('\n------------\nRandom Forest\n------------')
-    features = int(n_features * 0.5)
-    clf = RandomForestClassifier(n_estimators=20, max_features=features).fit(train_bag, y_train)
     # test
     predictions = clf.predict(test_bag)
     # confusion matrix
@@ -100,9 +59,11 @@ def main():
     }
     """
 
+    stemmed_vectorizer = StemmedCountVectorizer()
+
     # Logistic Regression
     print('\n------------\nLogistic Regression\n------------')
-    clf = Pipeline([('vect', CountVectorizer()),
+    clf = Pipeline([('vect', stemmed_vectorizer),
                     ('tfidf', TfidfTransformer()),
                     ('base', LogisticRegression(C=0.001)),
     ])
@@ -115,20 +76,24 @@ def main():
     accuracy = np.mean(predictions == y_test)
     print('accuracy = {0:.2f}%'.format(accuracy * 100))
     # probabilities for positives
+    random_probs = [0 for _ in range(len(y_test))]
     probs = clf.predict_proba(X_test)[:, 1]
     # AUC score
+    random_auc = roc_auc_score(y_test, random_probs)
     auc = roc_auc_score(y_test, probs)
     print('ROC AUC = {0:.3f}'.format(auc))
     # plot ROC curve
-    fpr, tpr, _ = roc_curve(y_test, probs)
-    plt.plot(fpr, tpr, marker='.', label='ROC Curve for Logistic Regression')
-    plt.xlabel('FPR')
-    plt.ylabel('TPR')
-    plt.show()
+    random_fpr, random_tpr, _ = roc_curve(y_test, random_probs)
+    lr_fpr, lr_tpr, _ = roc_curve(y_test, probs)
+    plt.plot(random_fpr, random_tpr, linestyle='--', label='Random Guessing')
+    plt.plot(lr_fpr, lr_tpr, marker='.', label='Logistic Regression')
+    plt.xlabel('False Positive rate')
+    plt.ylabel('True Positive Rate')
+    # plt.show()
     
     # KNN
     print('\n------------\nKNN\n------------')
-    clf = Pipeline([('vect', CountVectorizer()),
+    clf = Pipeline([('vect', stemmed_vectorizer),
                     ('tfidf', TfidfTransformer()),
                     ('base', KNeighborsClassifier(n_neighbors=32)),
     ])
@@ -145,10 +110,17 @@ def main():
     # AUC score
     auc = roc_auc_score(y_test, probs)
     print('ROC AUC = {0:.3f}'.format(auc))
+    # plot ROC curve
+    knn_fpr, knn_tpr, _ = roc_curve(y_test, probs)
+    plt.plot(random_fpr, random_tpr, linestyle='--', label='Random Guessing')
+    plt.plot(knn_fpr, knn_tpr, marker='.', label='KNN')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    # plt.show()
     
     # Naive Bayes
     print('\n------------\nNaive Bayes\n------------')
-    clf = Pipeline([('vect', CountVectorizer()),
+    clf = Pipeline([('vect', stemmed_vectorizer),
                     ('tfidf', TfidfTransformer()),
                     ('base', MultinomialNB(alpha=0.01)),
     ])
@@ -165,10 +137,17 @@ def main():
     # AUC score
     auc = roc_auc_score(y_test, probs)
     print('ROC AUC = {0:.3f}'.format(auc))
+    # plot ROC curve
+    nb_fpr, nb_tpr, _ = roc_curve(y_test, probs)
+    plt.plot(random_fpr, random_tpr, linestyle='--', label='Random Guessing')
+    plt.plot(nb_fpr, nb_tpr, marker='.', label='Naive Bayes')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    # plt.show()
     
     # SVM
     print('\n------------\nSVM\n------------')
-    clf = Pipeline([('vect', CountVectorizer()),
+    clf = Pipeline([('vect', stemmed_vectorizer),
                     ('tfidf', TfidfTransformer()),
                     ('base', SGDClassifier(loss='log', alpha=0.01)),
     ])
@@ -185,10 +164,17 @@ def main():
     # AUC score
     auc = roc_auc_score(y_test, probs)
     print('ROC AUC = {0:.3f}'.format(auc))
+    # plot ROC curve
+    svm_fpr, svm_tpr, _ = roc_curve(y_test, probs)
+    plt.plot(random_fpr, random_tpr, linestyle='--', label='Random Guessing')
+    plt.plot(svm_fpr, svm_tpr, marker='.', label='SVM')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    # plt.show()
     
     # Random Forest
     print('\n------------\nRandom Forest\n------------')
-    clf = Pipeline([('vect', CountVectorizer()),
+    clf = Pipeline([('vect', stemmed_vectorizer),
                     ('tfidf', TfidfTransformer()),
                     ('base', RandomForestClassifier(n_estimators=80, max_features=31)),
     ])
@@ -211,7 +197,19 @@ def main():
     # AUC score
     auc = roc_auc_score(y_test, probs)
     print('ROC AUC = {0:.3f}'.format(auc))
+    # plot ROC curve
+    rf_fpr, rf_tpr, _ = roc_curve(y_test, probs)
+    plt.plot(random_fpr, random_tpr, linestyle='--', label='Random Guessing')
+    plt.plot(rf_fpr, rf_tpr, marker='.', label='Random Forest')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.show()
 
+    # # plot all ROC curves
+    # plt.plot(fpr, tpr, marker='.', label='ROC Curve for Logistic Regression')
+    # plt.xlabel('FPR')
+    # plt.ylabel('TPR')
+    # plt.show()
 
 if __name__ == '__main__':
     main()
