@@ -4,6 +4,8 @@ Utils for loading and processing data.
 """
 
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from nltk.stem.snowball import SnowballStemmer
 
 def load_data():
     """
@@ -37,3 +39,11 @@ def process(data):
     for row in range(0, len(data.index)):
         X.append(' '.join(str(x) for x in data.iloc[row, 2:27]))
     return X, y
+
+# code referenced from:
+# https://towardsdatascience.com/machine-learning-nlp-text-classification-using-scikit-learn-python-and-nltk-c52b92a7c73a
+stemmer = SnowballStemmer("english", ignore_stopwords=True)
+class StemmedCountVectorizer(CountVectorizer):
+    def build_analyzer(self):
+        analyzer = super(StemmedCountVectorizer, self).build_analyzer()
+        return lambda doc: ([stemmer.stem(w) for w in analyzer(doc)])
