@@ -198,7 +198,7 @@ def main():
     plt.legend(loc='best')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.savefig('figs/all.png', format='png')
+    plt.savefig('figs/all_bigram.png', format='png')
     plt.show()
 
 
