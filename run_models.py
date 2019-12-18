@@ -26,27 +26,48 @@ def main():
     X_train, y_train = utils.process(train)
     X_test, y_test = utils.process(test)
 
-    # create vectorizer
-    vectorizer = CountVectorizer(ngram_range=(2, 2))
+    # create vectorizers
+    vectorizer = CountVectorizer()
     train_bag = vectorizer.fit_transform(X_train)
-    test_bag = vectorizer.transform(X_test)
+    clf = LogisticRegression().fit(train_bag, y_train)
+    words = vectorizer.get_feature_names()
+    coeffs = clf.coef_.tolist()[0]
+    df_coeff = pd.DataFrame({'Word': words, 'Coefficient': coeffs})
+    df_coeff = df_coeff.sort_values(['Coefficient', 'Word'], ascending=[0, 1])
+    print(df_coeff.head(10))
+    print(df_coeff.tail(10))
+    df_coeff.to_csv('coeffs/unigram.csv')
+
+    bigram_vectorizer = CountVectorizer(ngram_range=(2, 2))
+    train_bag = bigram_vectorizer.fit_transform(X_train)
+    test_bag = bigram_vectorizer.transform(X_test)
     n_features = train_bag.shape[1]
     print(train_bag.shape)
+
+    clf_bigram = LogisticRegression().fit(train_bag, y_train)
+    words = bigram_vectorizer.get_feature_names()
+    coeffs = clf_bigram.coef_.tolist()[0]
+    df_coeff = pd.DataFrame({'Word': words, 'Coefficient': coeffs})
+    df_coeff = df_coeff.sort_values(['Coefficient', 'Word'], ascending=[0, 1])
+    print(df_coeff.head(10))
+    print(df_coeff.tail(10))
+    df_coeff.to_csv('coeffs/bigram.csv')
     """
     # get most frequent words
     print(utils.get_top_words(X_train, 10))
-
+    
     # get TFIDF values
     sv = utils.StemmedCountVectorizer()
     train_bag = sv.fit_transform(X_train)
     tfidf_transformer = TfidfTransformer(smooth_idf=True, use_idf=True)
     tfidf_transformer.fit(train_bag)
     df_idf = pd.DataFrame(tfidf_transformer.idf_, index=sv.get_feature_names(), columns=["idf_weights"])
-    df_idf.sort_values(by=['idf_weights'])
-    print(df_idf)
+    df_idf = df_idf.sort_values(by=['idf_weights'])
     df_idf.to_csv('idf/values.csv')
+    print(df_idf.head(10))
+    print(df_idf.tail(10))
     """
-    
+    """
     # bag-of-bigrams model without using TFIDF
     # Logistic Regression
     print('\n------------\nLogistic Regression\n------------')
@@ -194,7 +215,7 @@ def main():
     plt.ylabel('True Positive Rate')
     plt.savefig('figs/rf_bigram.png', format='png')
     # plt.show()
-
+    """
     """
     # example parameters for tuning: Random Forest
     parameters = {'vect__ngram_range': [(1, 1), (1, 2)], # choose unigram or bigram
