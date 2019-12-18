@@ -1,7 +1,9 @@
 """
 Author: Tessa Pham
-Predict stock market changes based on daily news headlines using different models.
+Predict stock market changes based on daily news headlines using bag-of-words model with TF-DIF
+and different classifiers.
 """
+
 import pandas as pd
 import numpy as np
 import math
@@ -14,7 +16,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import roc_curve, roc_auc_score, classification_report
+from sklearn.metrics import roc_curve, roc_auc_score
 
 # my imports
 import utils
