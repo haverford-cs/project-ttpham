@@ -1,6 +1,6 @@
 """
 Author: Tessa Pham
-Predict stock prices based on daily news headlines using different models.
+Predict stock market changes based on daily news headlines using different models.
 """
 import pandas as pd
 import numpy as np
@@ -52,7 +52,7 @@ def main():
     """
 
     """
-    # parameters for tuning
+    # example parameters for tuning: Random Forest
     parameters = {'vect__ngram_range': [(1, 1), (1, 2)], # choose unigram or bigram
                   'tfidf__use_idf': (True, False),
                   'base__max_features': [int(features) for features in [n_features * 0.001, n_features * 0.1, n_features * 0.5, math.sqrt(n_features)]],
