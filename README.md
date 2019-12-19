@@ -56,15 +56,12 @@
 
 ## References
 
-* Tools and NLP techniques for handling text data:\
-https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
-https://towardsdatascience.com/machine-learning-nlp-text-classification-using-scikit-learn-python-and-nltk-c52b92a7c73a
-* More on selecting ML algos:\
-https://hackernoon.com/choosing-the-right-machine-learning-algorithm-68126944ce1f
-* Coefficients for words:\
-https://www.kaggle.com/ndrewgele/omg-nlp-with-the-djia-and-reddit
-* TF-IDF scores for each document and values for all documents:\
-https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/#.Xfm7sdZKjBI
+* Working With Text Data. https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html.
+* Shaikh, J. (2017, July). Machine Learning, NLP: Text Classification Using scikit-learn, Python and NLTK. https://towardsdatascience.com/machine-learning-nlp-text-classification-using-scikit-learn-python-and-nltk-c52b92a7c73a.
+* Harlalka, R. (2018, June). Choosing the Right Machine Learning Algorithm. https://hackernoon.com/choosing-the-right-machine-learning-algorithm-68126944ce1f.
+* Gelé, A. (2016). OMG! NLP with the DJIA and Reddit!. https://www.kaggle.com/ndrewgele/omg-nlp-with-the-djia-and-reddit.
+* Ganesan, K. How to Use Tfidftransformer & Tfidfvectorizer?. https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/#.Xfm7sdZKjBI.
+* Sun, J. (2016, August). Daily News for Stock Market Prediction, Version 1. Retrieved [2019, November 16] from https://www.kaggle.com/aaron7sun/stocknews.
 
 ## Navigate the Repository
 * `run_unigram.py`: runs 5 classifiers with the bag-of-words + TFIDF model.
