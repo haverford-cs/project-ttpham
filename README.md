@@ -1,5 +1,4 @@
 # project-ttpham: Stock Market Prediction Using Daily News
-## CS 360 - Final Project
 ## Tessa Pham
 
 ## Lab Notebook
@@ -28,7 +27,7 @@
 * implemented KNN and SVM
 * read about TFIDF
 
-12/17/2019 (8-10 hours):
+12/17/2019 (8-10 hours)
 * implemented Naive Bayes and Random Forest
 * added pipeline with TFIDF for each algo
 * tried not counting stop words => worse performance
@@ -40,6 +39,7 @@
 * exploring bigram models
 
 12/18/2019:
+
 (4 hours)
 * implemented bag-of-bigrams model
 * generated ROC curve plots for bigram model with different classifiers
@@ -47,67 +47,75 @@
 * calculated coefficients for words, selecting top words with highest pos/neg correlations with '1' label
 * worked on presentation
 
-(5 hours):
+(5 hours)
 * refactored code for 2 separate models
 * put back calculations for coeffs and TFIDF values for both models
 * exported coeffs and TFIDF values (i.e., word importances) to Excel and CSV files
 * final reruns, performance records, and plot figures for all model + classifier pairs
+* updated README
 
 ## References
 
-* Tools and NLP techniques for handling text data:
+* Tools and NLP techniques for handling text data:\
 https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
 https://towardsdatascience.com/machine-learning-nlp-text-classification-using-scikit-learn-python-and-nltk-c52b92a7c73a
-* More on selecting ML algos:
+* More on selecting ML algos:\
 https://hackernoon.com/choosing-the-right-machine-learning-algorithm-68126944ce1f
-* Coefficients for words:
+* Coefficients for words:\
 https://www.kaggle.com/ndrewgele/omg-nlp-with-the-djia-and-reddit
-* TF-IDF scores for each document and values for all documents:
+* TF-IDF scores for each document and values for all documents:\
 https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/#.Xfm7sdZKjBI
 
 ## Navigate the Repository
 * `run_unigram.py`: runs 5 classifiers with the bag-of-words + TFIDF model.
 * `run_bigram.py`: runs 5 classifiers with the bag-of-bigrams model.
 ROC curve plots will be recreated from each run, thus may be different from the results recorded in the next section (e.g., for Random Forest).
-* `figs` folder: contains ROC curve plot figures.
-* `idf` folder: contains TFIDF values for all words and bigrams in the vocabulary of the given text data. A number of most and least important words are exported into separate files for ease of reference.
-* `coeffs` folder: contains coefficients for all words and bigrams in the vocabulary of the given text data. 30 words with highest/lowest correlations with the '1' label are provided in separate files for the unigram model, and 300 words for the bigram model.
+* `stocknews`: contains labeled data.
+* `figs`: contains ROC curve plot figures.
+* `idf`: contains TFIDF values for all words and bigrams in the vocabulary of the given text data. A number of most and least important words are exported into separate files for ease of reference.
+* `coeffs`: contains coefficients for all words and bigrams in the vocabulary of the given text data. 30 words with highest/lowest correlations with the '1' label are provided in separate files for the unigram model, and 300 words for the bigram model.
 
 ## Performance Records
 ### bag-of-words only
-Logistic Regression: 42.59%
-KNN: 51.06%
-Naive Bayes: 49.47%
-SVM: 44.97%
+Logistic Regression: 42.59%\
+KNN: 51.06%\
+Naive Bayes: 49.47%\
+SVM: 44.97%\
 Random Forest: 44.97%
 
-Logistic Regression: 48.68
-KNN: 50.53
-Naive Bayes: 50.79
-SVM: 44.44
-Random Forest: 51.59 (range 50-52)
+### bag-of-words + tf-idf
+Logistic Regression: 48.68%\
+KNN: 50.53%\
+Naive Bayes: 50.79%\
+SVM: 44.44%\
+Random Forest: 51.59% (range 50-52%)
 
 ### parameter tuning
-Logistic Regression: best score: 0.5418994413407822, best params: {'base__C': 0.001, 'tfidf__use_idf': True, 'vect__ngram_range': (1, 1)}
-50.79%
+Logistic Regression:\
+best score: 0.5418994413407822, best params: {'base__C': 0.001, 'tfidf__use_idf': True, 'vect__ngram_range': (1, 1)}\
+accuracy = 50.79%\
 ROC AUC = 0.454
 
-KNN: best score: 0.5543140906269398, best params: {'base__n_neighbors': 32, 'tfidf__use_idf': False, 'vect__ngram_range': (1, 2)}
-52.65%
+KNN: best score: 0.5543140906269398, best params: {'base__n_neighbors': 32, 'tfidf__use_idf': False, 'vect__ngram_range': (1, 2)}\
+accuracy = 52.65%\
 ROC AUC = 0.536
 
-Naive Bayes: best score: 0.5406579764121664, best params: {'base__alpha': 0.01, 'tfidf__use_idf': False, 'vect__ngram_range': (1, 2)}
-51.59%
+Naive Bayes:\
+best score: 0.5406579764121664, best params: {'base__alpha': 0.01, 'tfidf__use_idf': False, 'vect__ngram_range': (1, 2)}\
+accuracy = 51.59%\
 ROC AUC = 0.488
 
-SVM: best score: 0.5418994413407822, best params: {'base__alpha': 0.01, 'tfidf__use_idf': True, 'vect__ngram_range': (1, 1)}
-50.79
+SVM:\
+best score: 0.5418994413407822, best params: {'base__alpha': 0.01, 'tfidf__use_idf': True, 'vect__ngram_range': (1, 1)}
+accuracy = 50.79\
 ROC AUC = 0.454
 
-Random Forest: 0.5450031036623215, best params: {'base__max_features': 31, 'base__n_estimators': 80, 'tfidf__use_idf': False, 'vect__ngram_range': (1, 2)}
+Random Forest:\
+best score: 0.5450031036623215, best params: {'base__max_features': 31, 'base__n_estimators': 80, 'tfidf__use_idf': False, 'vect__ngram_range': (1, 2)}\
 ROC AUC = 0.526
 
 ### bag-of-words (with stemming & tuned params) + tf-idf
+```
 ------------
 Logistic Regression
 ------------
@@ -157,8 +165,10 @@ True
 1          44  148
 accuracy = 50.79%
 ROC AUC = 0.523
+```
 
 ### bag-of-bigrams
+```
 ------------
 Logistic Regression
 ------------
@@ -208,3 +218,4 @@ True
 1          49  143
 accuracy = 52.38%
 ROC AUC = 0.531
+```
