@@ -136,7 +136,7 @@ def main():
     # SVM
     print('\n------------\nSVM\n------------')
     clf = SGDClassifier().fit(train_bag, y_train)
-    calibrator = CalibratedClassifierCV(clf, cv='prefit')
+    calibrator = CalibratedClassifierCV(clf, cv='prefit') # calibrate to calculate probabilities
     clf = calibrator.fit(train_bag, y_train)
     # test
     predictions = clf.predict(test_bag)

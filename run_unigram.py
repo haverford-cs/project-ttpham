@@ -157,7 +157,7 @@ def main():
     print('\n------------\nSVM\n------------')
     clf = Pipeline([('vect', utils.StemmedCountVectorizer()),
                     ('tfidf', TfidfTransformer()),
-                    ('base', CalibratedClassifierCV(SGDClassifier(alpha=0.01), cv=5)),
+                    ('base', CalibratedClassifierCV(SGDClassifier(alpha=0.01), cv=5)), # calibrate to calculate probabilities
     ])
     clf.fit(X_train, y_train)
     # test

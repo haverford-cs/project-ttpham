@@ -31,8 +31,7 @@ def process(data):
     
     Returns:
         X (list) -- list of daily news headlines (25 headlines concatenated for each day)
-        y (list) -- list of daily news headlines
-                            (25 headlines concatenated for each day)
+        y (list) -- list of labels for DJIA close value changes ('0' for decrease, '1' otherwise)
     """
     X = []
     y = data['Label']
@@ -44,6 +43,11 @@ def process(data):
 # https://towardsdatascience.com/machine-learning-nlp-text-classification-using-scikit-learn-python-and-nltk-c52b92a7c73a
 stemmer = SnowballStemmer("english", ignore_stopwords=True)
 class StemmedCountVectorizer(CountVectorizer):
+    """
+    A wrapper class of CountVectorizer that counts word stems instead of different
+    forms of a word (e.g., 'does' and 'did' are both counted as 'do'). Words are stemmed
+    using a stemmer from NLTK.
+    """
     def build_analyzer(self):
         analyzer = super(StemmedCountVectorizer, self).build_analyzer()
         return lambda doc: ([stemmer.stem(w) for w in analyzer(doc)])
