@@ -1,6 +1,6 @@
 """
 Author: Tessa Pham
-Predict stock market changes based on daily news headlines using bag-of-words model with TF-DIF
+Predict stock market changes based on daily news headlines using bag-of-words model with TFIDF
 and different classifiers.
 """
 
