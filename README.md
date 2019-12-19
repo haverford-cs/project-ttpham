@@ -1,4 +1,4 @@
-# project-ttpham: Stock Market Prediction Using Daily News
+# Stock Market Prediction Using Daily News
 ## Tessa Pham
 
 ## Lab Notebook
